@@ -10,6 +10,7 @@ ENV GCE_METADATA_ROOT 127.0.0.1
 
 RUN apt-get update -qq && \
     apt-get clean
+RUN apt-get install -y cmake
 
 
 # ------------------------------------------------------
