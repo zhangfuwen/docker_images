@@ -10,7 +10,7 @@ ENV GCE_METADATA_ROOT 127.0.0.1
 
 RUN apt-get update -qq && \
     apt-get clean
-RUN apt-get install -y cmake
+RUN apt-get install -y cmake wget
 
 
 # ------------------------------------------------------
@@ -27,8 +27,6 @@ RUN mkdir /opt/android-ndk-tmp && \
 # remove temp dir
     cd ${ANDROID_NDK_HOME} && \
     rm -rf /opt/android-ndk-tmp
-    
-RUN apt-get install -y cmake
 
 # add to PATH
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
