@@ -10,6 +10,13 @@ ENV GCE_METADATA_ROOT 127.0.0.1
 
 RUN apt-get update -qq && \
     apt-get clean
+
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+	export DEBIAN_FRONTEND=noninteractive && \
+	apt install -y tzdata && \
+	dpkg-reconfigure --frontend noninteractive tzdata
+
+
 RUN apt-get install -y wget npm git vim zsh sudo
 
 
