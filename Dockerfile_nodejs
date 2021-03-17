@@ -21,7 +21,7 @@ RUN mkdir /opt/tmp && \
     cd /opt/tmp && \
     wget -q https://nodejs.org/dist/v14.16.0/node-v14.16.0-linux-x64.tar.xz && \
 # uncompress
-    tar xvf node-v14.16.0-linux-x64.tar.xz \
+    tar xvf node-v14.16.0-linux-x64.tar.xz && \
 # move to its final location
     mv ./node-v14.16.0-linux-x64 /opt/ && \
 # remove temp dir
