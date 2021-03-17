@@ -30,8 +30,9 @@ RUN mkdir /opt/tmp && \
 # add to PATH
 ENV PATH /opt/node-v14.16.0-linux-x64/bin:${PATH}
 
-RUN apt-get install -y npm git vim
+RUN apt-get install -y npm git vim zsh sudo
 RUN cd /opt/ && wget -q https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz && tar xvzf nvim-linux64.tar.gz && rm nvim-linux64.tar.gz
 RUN npm install -g yarn
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-EVN PATH /opt/nvim-linux64/bin:${PATH}
+ENV PATH /opt/nvim-linux64/bin:${PATH}
