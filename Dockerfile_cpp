@@ -20,3 +20,4 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 RUN apt-get install -y wget git vim zsh sudo neovim curl gcc clang sshpass
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
+ENV GIT_SSH_VARIANT=ssh
