@@ -17,7 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 	dpkg-reconfigure --frontend noninteractive tzdata
 
 
-RUN apt-get install -y wget npm git vim zsh sudo
+RUN apt-get install -y wget npm git vim zsh sudo neovim
 
 
 # ------------------------------------------------------
@@ -37,7 +37,6 @@ RUN mkdir /opt/tmp && \
 # add to PATH
 ENV PATH /opt/node-v14.16.0-linux-x64/bin:${PATH}
 
-RUN cd /opt/ && wget -q https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz && tar xvzf nvim-linux64.tar.gz && rm nvim-linux64.tar.gz
 RUN npm install -g yarn
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
