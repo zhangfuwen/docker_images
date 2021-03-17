@@ -17,7 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 	dpkg-reconfigure --frontend noninteractive tzdata
 
 
-RUN apt-get install -y wget npm git vim zsh sudo neovim
+RUN apt-get install -y wget npm git vim zsh sudo neovim curl
 
 
 # ------------------------------------------------------
