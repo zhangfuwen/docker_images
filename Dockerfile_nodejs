@@ -38,6 +38,6 @@ RUN mkdir /opt/tmp && \
 ENV PATH /opt/node-v14.16.0-linux-x64/bin:${PATH}
 
 RUN npm install -g yarn
-RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
 ENV PATH /opt/nvim-linux64/bin:${PATH}
