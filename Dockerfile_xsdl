@@ -17,7 +17,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 	dpkg-reconfigure --frontend noninteractive tzdata
 
 
-RUN apt-get install -y wget git vim zsh sudo neovim curl gcc clang sshpass clangd cmake
+RUN apt-get install -y wget git vim zsh sudo neovim curl gcc clang sshpass cmake
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
 RUN apt-get install -y bison make zip git locales pkg-config \
