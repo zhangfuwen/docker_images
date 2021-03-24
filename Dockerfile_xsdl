@@ -1,0 +1,32 @@
+FROM debian:10
+
+ENV ANDROID_NDK_HOME /opt/android-ndk
+ENV ANDROID_NDK_VERSION r22
+ENV GCE_METADATA_ROOT 127.0.0.1
+
+
+# ------------------------------------------------------
+# --- Install required tools
+
+RUN dpkg --add-architecture i386 && apt-get update -qq && \
+    apt-get clean
+
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+	export DEBIAN_FRONTEND=noninteractive && \
+	apt install -y tzdata && \
+	dpkg-reconfigure --frontend noninteractive tzdata
+
+
+RUN apt-get install -y wget git vim zsh sudo neovim curl gcc clang sshpass clangd cmake
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
+
+RUN apt-get install -y bison make zip git locales pkg-config \
+curl autoconf automake autopoint libtool libtool-bin help2man texinfo intltool \
+xfonts-utils xutils-dev libfontenc-dev libxkbfile-dev libxmuu-dev \
+libjpeg-dev libpng-dev libpixman-1-dev libssl-dev libpciaccess-dev
+
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
+/etc/sudoers
+
+ENV GIT_SSH_VARIANT=ssh
+ENV PATH=${PATH}:/opt/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin
