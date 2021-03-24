@@ -7,6 +7,7 @@ ENV GCE_METADATA_ROOT 127.0.0.1
 
 # ------------------------------------------------------
 # --- Install required tools
+RUN echo "deb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
 
 RUN dpkg --add-architecture i386 && apt-get update -qq && \
     apt-get clean
@@ -34,7 +35,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 ENV GIT_SSH_VARIANT=ssh
 ENV PATH=${PATH}:/opt/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin
 
-RUN apt install -y openjdk-11-jdk
+RUN apt install -y openjdk-8-jdk
 RUN mkdir /opt/android-sdk && \
 cd /opt/android-sdk && \
 curl --output sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip && \
