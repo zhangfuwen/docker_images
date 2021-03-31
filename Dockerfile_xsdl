@@ -35,10 +35,11 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 ENV GIT_SSH_VARIANT=ssh
 ENV PATH=${PATH}:/opt/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin
 
-RUN apt-get install -y software-properties-common && \
-	apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' && \
-	apt-get update -qq && \
-	apt install -y openjdk-8-jdk
+RUN  wget https://download.java.net/java/GA/jdk10/10.0.2/19aef61b38124481863b1413dce1855f/13/openjdk-10.0.2_linux-x64_bin.tar.gz && \
+	tar xvzf openjdk-10.0.2_linux-x64_bin.tar.gz -C /opt/ && \
+	rm openjdk-10.0.2_linux-x64_bin.tar.gz
+ENV JAVA_HOME=/opt/jdk-10.0.2
+ENV PATH=/opt/jdk-10.0.2:${PATH}
 
 ENV JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
 
