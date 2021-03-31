@@ -40,6 +40,8 @@ RUN apt-get install -y software-properties-common && \
 	apt-get update -qq && \
 	apt install -y openjdk-8-jdk
 
+ENV JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+
 RUN mkdir /opt/android-sdk && \
 cd /opt/android-sdk && \
 curl --output sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip && \
