@@ -6,12 +6,11 @@ RUN dpkg --add-architecture i386 && apt-get update -qq && \
 RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make clang++
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
-RUN echo "alias vi='nvim'" >> ~/.zshrc && cat > ~/.config/nvim/init.vim << EOF
-" updated by GitNote
-set runtimepath^=~/.vim runtimepath+=~/.vim/after
-let &packpath=&runtimepath
-source ~/.vimrc
-EOF
+RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ~/.config/nvim  && \
+echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> ~/.config/nvim/init.vim \
+echo "let &packpath=&runtimepath" >> ~/.config/nvim/init.vim \
+echo "source ~/.vimrc" >> ~/.conifg/nvim/init.vim \
+
 
 RUN curl -fLo ~/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc
 RUN mkdir -p /data1/GitNote/vim/ && curl -fLo /data1/GitNote/vim/coc.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc
