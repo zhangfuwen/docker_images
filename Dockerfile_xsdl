@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 RUN apt-get update -qq && \
     apt-get clean
 
-RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make clang++
+RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
 RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ~/.config/nvim  && \
