@@ -17,7 +17,7 @@ RUN mkdir -p /data1/GitNote/vim/ && curl -fLo /data1/GitNote/vim/coc.vim --creat
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     
-RUN vi +PlugInstall +qall && apt install -y ripgrep cppman ctags cscope
+RUN apt install -y ripgrep cppman ctags cscope
 
 
 
