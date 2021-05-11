@@ -3,21 +3,32 @@ FROM ubuntu:20.04
 RUN apt-get update -qq && \
     apt-get clean
 
-RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt install -y tzdata && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+
+RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
-RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ~/.config/nvim  && \
-echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> ~/.config/nvim/init.vim \
-echo "let &packpath=&runtimepath" >> ~/.config/nvim/init.vim \
-echo "source ~/.vimrc" >> ~/.conifg/nvim/init.vim \
+RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ${HOME}/.config/nvim  && \
+    echo "set runtimepath^=${HOME}/.vim runtimepath+=${HOME}/.vim/after" >> ${HOME}/.config/nvim/init.vim && \
+    echo "let &packpath=&runtimepath" >> ${HOME}/.config/nvim/init.vim && \
+    echo "source ${HOME}/.vimrc" >> ${HOME}/.config/nvim/init.vim
 
 
-RUN curl -fLo ~/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc
-RUN mkdir -p /data1/GitNote/vim/ && curl -fLo /data1/GitNote/vim/coc.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc
+RUN curl -fLo ${HOME}/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc && \
+    mkdir -p ~/.vim && \
+    curl -fLo ~/.vim/coc.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/coc.vim && \
+    curl -fLo ~/.vim/plugins.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/plugins.vim
+
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     
 RUN apt install -y ripgrep cppman ctags cscope
+
+RUN nvim +PlugInstall +qall
 
 
 
