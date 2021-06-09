@@ -1,16 +1,5 @@
 FROM ubuntu:20.04
 
-ENV ANDROID_NDK_HOME /opt/android-ndk
-ENV ANDROID_NDK /opt/android-ndk
-
-ENV ANDROID_SDK_HOME /opt/android-sdk
-ENV ANDROID_SDK /opt/android-sdk
-ENV ANDROID_SDK_ROOT /opt/android-sdk
-
-ENV ANDROID_NDK_VERSION r22
-ENV GCE_METADATA_ROOT 127.0.0.1
-
-
 # ------------------------------------------------------
 # --- Install required tools
 
@@ -23,19 +12,15 @@ RUN apt-get install -y cmake wget unzip
 # --- Android NDK
 
 # download
-RUN mkdir /opt/android-ndk-tmp && \
-    cd /opt/android-ndk-tmp && \
-    wget -q https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-# uncompress
-    unzip -q android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-# move to its final location
-    mv ./android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_HOME} && \
-# remove temp dir
-    cd ${ANDROID_NDK_HOME} && \
-    rm -rf /opt/android-ndk-tmp
+ENV ANDROID_NDK_HOME /opt/android-ndk
+ENV ANDROID_NDK_VERSION=r22
+ADD install_ndk.sh /opt/
+RUN chmod +x /opt/install_ndk.sh && /opt/install_ndk.sh ${ANDROID_NDK_HOME} ${ANDROID_NDK_VERSION}
+
+ENV ANDROID_NDK ${ANDROID_NDK_HOME} 
+ENV PATH ${PATH}:${ANDROID_NDK_HOME}:${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/
 
 # add to PATH
-ENV PATH ${PATH}:${ANDROID_NDK_HOME}
 
 # support multiarch: i386 architecture
 # install Java
@@ -48,17 +33,16 @@ RUN dpkg --add-architecture i386 && \
     apt-get install -y --no-install-recommends libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc1 lib32ncurses6 lib32z1 zlib1g:i386 && \
     apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
     apt-get install -y --no-install-recommends git wget unzip && \
-    apt-get install -y --no-install-recommends qt5-default
+    apt-get install -y --no-install-recommends qt5-default vim zsh
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
-ARG GRADLE_VERSION=6.9
-ARG GRADLE_DIST=bin
-RUN cd /opt && \
-    wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-${GRADLE_DIST}.zip && \
-    unzip gradle*.zip && \
-    ls -d */ | sed 's/\/*$//g' | xargs -I{} mv {} gradle && \
-    rm gradle*.zip
+ENV GRADLE_VERSION 6.9
+ENV GRADLE_DIST bin
+ENV GRADLE_HOME /opt/gradle-${GRADLE_VERSION}
+ADD install_gradle.sh /opt/
+RUN chmod +x /opt/install_gradle.sh && /opt/install_gradle.sh ${GRADLE_VERSION}
+ENV PATH=${PATH}:${GRADLE_HOME}/bin
 
 # download and install Kotlin compiler
 # https://github.com/JetBrains/kotlin/releases/latest
@@ -70,6 +54,10 @@ RUN cd /opt && \
 
 # download and install Android SDK
 # https://developer.android.com/studio#command-tools
+ENV ANDROID_SDK_HOME /opt/android-sdk
+ENV ANDROID_HOME /opt/android-sdk
+ENV ANDROID_SDK /opt/android-sdk
+ENV ANDROID_SDK_ROOT /opt/android-sdk
 ARG ANDROID_SDK_VERSION=7302050
 RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
@@ -79,7 +67,6 @@ RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
 
 # set the environment variables
 ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
-ENV GRADLE_HOME /opt/gradle
 ENV KOTLIN_HOME /opt/kotlinc
 ENV PATH ${PATH}:${GRADLE_HOME}/bin:${KOTLIN_HOME}/bin:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/emulator
 ENV _JAVA_OPTIONS -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
