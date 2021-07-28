@@ -1,32 +1,40 @@
 FROM ubuntu:20.04
 
-ENV ANDROID_NDK_HOME /opt/android-ndk
-ENV ANDROID_NDK_VERSION r22
-ENV GCE_METADATA_ROOT 127.0.0.1
-
-
 # ------------------------------------------------------
 # --- Install required tools
 
 RUN apt-get update -qq && \
     apt-get clean
-RUN apt-get install -y cmake wget unzip
+RUN apt-get install -y cmake wget unzip openjdk-11-jdk python python3 curl sudo git
+
+ENV ANDROID_SDK_VERSION 7302050
+ENV ANDROID_SDK_ROOT /opt/android-sdk
+ENV ANDROID_SDK /opt/android-sdk
+ENV ANDROID_HOME /opt/android-sdk
+
+RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip &&      \
+    unzip *tools*linux*.zip -d ${ANDROID_SDK_ROOT}/cmdline-tools &&      \
+    mv ${ANDROID_SDK_ROOT}/cmdline-tools/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/tools &&      \
+    rm *tools*linux*.zip
+
+
+RUN yes | /opt/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+
+RUN $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "tools" "platform-tools" && \
+    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "build-tools;28.0.3" "build-tools;27.0.3" && \
+    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platforms;android-28" "platforms;android-27" && \
+    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "extras;android;m2repository" "extras;google;m2repository" && \
+    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "cmake;3.10.2.4988404" &&
+    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "ndk;21.4.7075529" 
+
+ENV ANDROID_NDK_HOME /opt/android-sdk/ndk/21.4.7075529/
+ENV ANDROID_NDK $ANDROID_NDK_HOME
 
 
 # ------------------------------------------------------
 # --- Android NDK
 
-# download
-RUN mkdir /opt/android-ndk-tmp && \
-    cd /opt/android-ndk-tmp && \
-    wget -q https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-# uncompress
-    unzip -q android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip && \
-# move to its final location
-    mv ./android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_HOME} && \
-# remove temp dir
-    cd ${ANDROID_NDK_HOME} && \
-    rm -rf /opt/android-ndk-tmp
 
 # add to PATH
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
