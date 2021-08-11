@@ -43,3 +43,12 @@ ENV ANDROID_NDK $ANDROID_NDK_HOME
 
 # add to PATH
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
+
+
+# install gradle
+ENV GRADLE_VERSION 6.9
+ENV GRADLE_DIST bin
+ENV GRADLE_HOME /opt/gradle-${GRADLE_VERSION}
+ADD ./install_gradle.sh /opt/
+RUN chmod +x /opt/install_gradle.sh && /opt/install_gradle.sh ${GRADLE_VERSION}
+ENV PATH=${PATH}:${GRADLE_HOME}/bin
