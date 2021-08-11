@@ -3,9 +3,13 @@ FROM ubuntu:20.04
 # ------------------------------------------------------
 # --- Install required tools
 
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
 RUN apt-get update -qq && \
-    apt-get clean
-RUN apt-get install -y cmake wget unzip openjdk-11-jdk python python3 curl sudo git
+    apt-get clean &&  \
+    apt-get install -y cmake wget unzip openjdk-11-jdk python python3 curl sudo git && \
+    apt-get clean -y 
+
 
 ENV ANDROID_SDK_VERSION 7302050
 ENV ANDROID_SDK_ROOT /opt/android-sdk
