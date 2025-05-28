@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:25.04
 
 RUN apt-get update -qq && \
     apt-get clean
@@ -30,5 +30,4 @@ RUN apt install -y ripgrep cppman ctags cscope
 
 RUN nvim +PlugInstall +qall
 
-
-
+RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat ./zsh_plugins.sh >> ~/.zshrc
