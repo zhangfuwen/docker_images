@@ -32,7 +32,7 @@ RUN dpkg --add-architecture i386 && \
     apt-get install -y --no-install-recommends libc6:i386 libstdc++6:i386 libgcc-s1:i386 libncurses6:i386 zlib1g:i386 && \
     apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
     apt-get install -y --no-install-recommends git wget unzip && \
-    apt-get install -y --no-install-recommends qt5-default vim zsh
+    apt-get install -y --no-install-recommends vim zsh qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
