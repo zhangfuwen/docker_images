@@ -1,11 +1,10 @@
-FROM ubuntu:20.04
+FROM xjbcode/ci_docker_android_ndk:mybuntu_v6
 
 # ------------------------------------------------------
 # --- Install required tools
 
-RUN apt-get update -qq && \
-    apt-get clean
-RUN apt-get install -y cmake wget unzip
+RUN apt-get update -qq
+RUN apt-get install -y cmake wget unzip && apt-get clean
 
 
 # ------------------------------------------------------
@@ -26,7 +25,7 @@ ENV PATH ${PATH}:${ANDROID_NDK_HOME}:${ANDROID_NDK_HOME}/toolchains/llvm/prebuil
 # install Java
 # install essential tools
 # install Qt
-ARG JDK_VERSION=8
+ARG JDK_VERSION=17
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get dist-upgrade -y && \
@@ -37,7 +36,7 @@ RUN dpkg --add-architecture i386 && \
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
-ENV GRADLE_VERSION 6.9
+ENV GRADLE_VERSION 8.2
 ENV GRADLE_DIST bin
 ENV GRADLE_HOME /opt/gradle-${GRADLE_VERSION}
 ADD install_gradle.sh /opt/
