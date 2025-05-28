@@ -27,5 +27,6 @@ RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     
 RUN nvim +PlugInstall +qall
 
-RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat ./zsh_plugins.sh >> ~/.zshrc
+COPY zsh_plugins.sh /tmp/zsh_plugins.sh
+RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat /tmp/zsh_plugins.sh >> ~/.zshrc && rm /tmp/zsh_plugins.sh
 
