@@ -1,54 +1,34 @@
-FROM ubuntu:20.04
+FROM ubuntu:25.04
 
-# ------------------------------------------------------
-# --- Install required tools
-
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Asia/Shanghai
 RUN apt-get update -qq && \
-    apt-get clean &&  \
-    apt-get install -y cmake wget unzip openjdk-11-jdk python python3 curl sudo git && \
-    apt-get clean -y 
+    apt-get clean
+
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt install -y tzdata && \
+    dpkg-reconfigure --frontend noninteractive tzdata
 
 
-ENV ANDROID_SDK_VERSION 7302050
-ENV ANDROID_SDK_ROOT /opt/android-sdk
-ENV ANDROID_SDK /opt/android-sdk
-ENV ANDROID_HOME /opt/android-sdk
-ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
-RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
-    wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip &&      \
-    unzip *tools*linux*.zip -d ${ANDROID_SDK_ROOT}/cmdline-tools &&      \
-    mv ${ANDROID_SDK_ROOT}/cmdline-tools/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/tools &&      \
-    rm *tools*linux*.zip
+RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ${HOME}/.config/nvim  && \
+    echo "set runtimepath^=${HOME}/.vim runtimepath+=${HOME}/.vim/after" >> ${HOME}/.config/nvim/init.vim && \
+    echo "let &packpath=&runtimepath" >> ${HOME}/.config/nvim/init.vim && \
+    echo "source ${HOME}/.vimrc" >> ${HOME}/.config/nvim/init.vim
 
 
-RUN yes | /opt/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+RUN curl -fLo ${HOME}/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc && \
+    mkdir -p ~/.vim && \
+    curl -fLo ~/.vim/coc.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/coc.vim && \
+    curl -fLo ~/.vim/plugins.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/plugins.vim
 
-RUN $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "tools" "platform-tools" && \
-    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "build-tools;28.0.3" "build-tools;27.0.3" && \
-    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platforms;android-28" "platforms;android-27" "platforms;android-29" "platforms;android-30" && \
-    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "extras;android;m2repository" "extras;google;m2repository" && \
-    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "cmake;3.10.2.4988404" && \
-    $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "ndk;21.4.7075529" 
+RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    
+RUN apt install -y ripgrep cppman ctags cscope
 
-ENV ANDROID_NDK_HOME /opt/android-sdk/ndk/21.4.7075529/
-ENV ANDROID_NDK $ANDROID_NDK_HOME
+RUN nvim +PlugInstall +qall
 
+RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat ./zsh_plugins.sh >> ~/.zshrc
 
-# ------------------------------------------------------
-# --- Android NDK
-
-
-# add to PATH
-ENV PATH ${PATH}:${ANDROID_NDK_HOME}
-
-
-# install gradle
-ENV GRADLE_VERSION 6.9
-ENV GRADLE_DIST bin
-ENV GRADLE_HOME /opt/gradle-${GRADLE_VERSION}
-ADD ./install_gradle.sh /opt/
-RUN chmod +x /opt/install_gradle.sh && /opt/install_gradle.sh ${GRADLE_VERSION}
-ENV PATH=${PATH}:${GRADLE_HOME}/bin
