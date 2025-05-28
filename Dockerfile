@@ -1,7 +1,6 @@
 FROM ubuntu:25.04
 
-RUN apt-get update -qq && \
-    apt-get clean
+RUN apt-get update -qq
 
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     export DEBIAN_FRONTEND=noninteractive && \
@@ -9,7 +8,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     dpkg-reconfigure --frontend noninteractive tzdata
 
 
-RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs
+RUN apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs ripgrep cppman universal-ctags cscope && apt-get clean
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh
 
 RUN echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ${HOME}/.config/nvim  && \
@@ -26,8 +25,6 @@ RUN curl -fLo ${HOME}/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     
-RUN apt install -y ripgrep cppman ctags cscope
-
 RUN nvim +PlugInstall +qall
 
 RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat ./zsh_plugins.sh >> ~/.zshrc
