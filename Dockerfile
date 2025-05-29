@@ -13,13 +13,17 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
     echo "let &packpath=&runtimepath" >> ${HOME}/.config/nvim/init.vim && \
     echo "source ${HOME}/.vimrc" >> ${HOME}/.config/nvim/init.vim ; \
     curl -fLo ${HOME}/.vimrc --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/vimrc && \
+    echo "downloaded vimrc" ;\
     mkdir -p ~/.vim && \
     curl -fLo ~/.vim/coc.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/coc.vim && \
     curl -fLo ~/.vim/plugins.vim --create-dirs https://gitee.com/zhangfuwen/GitNote/raw/master/vim/plugins.vim; \
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; \
+    echo "run nvim install" ;\
     nvim +PlugInstall +qall ;\
+    echo "done"
 
 COPY zsh_plugins.sh /tmp/zsh_plugins.sh
+
 RUN test -d ~/.local/bin || mkdir ~/.local/bin && curl -L git.io/antigen > ~/.local/bin/antigen.zsh && cat /tmp/zsh_plugins.sh >> ~/.zshrc && rm /tmp/zsh_plugins.sh
 
