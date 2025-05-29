@@ -5,7 +5,7 @@ RUN apt-get update -qq ; \
     export DEBIAN_FRONTEND=noninteractive && \
     apt install -y tzdata && \
     dpkg-reconfigure --frontend noninteractive tzdata ; \
-    apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs ripgrep cppman universal-ctags cscope && apt-get clean
+    apt-get install -y wget git vim zsh neovim curl gcc clang sshpass cmake make nodejs ripgrep cppman universal-ctags cscope tree && apt-get clean
 
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&  chsh -s /usr/bin/zsh; \
     echo "alias vi='nvim'" >> ~/.zshrc && mkdir -p ${HOME}/.config/nvim  && \
